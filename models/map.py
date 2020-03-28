@@ -34,7 +34,7 @@ class Map:
             ),
             title=f'World {self.type} cases map',
             titlefont={"color": "#c9c9c9"},
-            height=500,
+            height=700,
             showlegend=False,
             geo=dict(
                 scope='world',
