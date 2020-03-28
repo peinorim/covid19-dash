@@ -1,6 +1,5 @@
 import os
 from math import inf
-import pandas as pd
 import plotly.graph_objects as go
 
 PERIODS = 30
@@ -14,6 +13,7 @@ class Forecast:
         self.data = data
 
     def format_forecast(self):
+        import pandas as pd
         forecast = {'ds': [], 'y': []}
         for res in self.data:
             if res == self.country:
