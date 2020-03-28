@@ -7,8 +7,9 @@ class Map:
         self.type = type
         self.data = data
         self.tots = tots
+        self.figure = None
 
-    def get_figure(self):
+    def set_figure(self):
         fig = go.Figure()
 
         for country in self.data:
@@ -44,4 +45,4 @@ class Map:
             )
         )
 
-        return fig
+        self.figure = fig

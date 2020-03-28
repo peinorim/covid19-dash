@@ -10,8 +10,9 @@ class Pie:
         self.type = type
         self.country = country
         self.data = data
+        self.figure = None
 
-    def get_figure(self):
+    def set_figure(self):
         fig = go.Figure()
         labels = ['Recovered', 'Deaths', 'Others']
         values = []
@@ -36,4 +37,4 @@ class Pie:
                 color="#FFF"
             ),
         )
-        return fig
+        self.figure = fig

@@ -14,8 +14,9 @@ class Timeline:
         self.countries = countries if countries else list()
         self.data = data
         self.dayone_mode = dayone_mode
+        self.figure = None
 
-    def get_figure(self):
+    def set_figure(self):
         fig = go.Figure()
 
         for res in self.data:
@@ -98,4 +99,4 @@ class Timeline:
                 linecolor='#6F6F6F'
             ),
         )
-        return fig
+        self.figure = fig

@@ -11,6 +11,7 @@ class Forecast:
         self.type = type
         self.country = country
         self.data = data
+        self.figure = None
 
     def format_forecast(self):
         import pandas as pd
@@ -22,7 +23,7 @@ class Forecast:
                     forecast['y'].append(day[self.type])
         return pd.DataFrame.from_dict(forecast)
 
-    def get_figure(self):
+    def set_figure(self):
         if os.environ.get('FORECAST', "0") != "1":
             return {}
         from fbprophet import Prophet
@@ -57,4 +58,4 @@ class Forecast:
             ),
             yaxis=dict(showgrid=True),
         )
-        return forecast_fig
+        self.figure = forecast_fig
