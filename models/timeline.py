@@ -50,7 +50,7 @@ class Timeline:
                         name=res,
                         opacity=0.8))
                 else:
-                    graph_title = f'{self.countries[0]} {self.type} cases' if self.dayone_mode is False else f'{self.countries[0]} {self.type} cases from day 0'
+                    graph_title = f'{self.countries[0]} cases' if self.dayone_mode is False else f'{self.countries[0]} {self.type} cases from day 0'
                     fig.add_trace(go.Scatter(
                         x=data['dates'],
                         y=data['confirmed'],
