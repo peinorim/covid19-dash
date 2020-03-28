@@ -1,5 +1,3 @@
-import time
-
 import plotly.graph_objects as go
 
 
@@ -10,8 +8,7 @@ class Map:
         self.data = data
         self.tots = tots
 
-    def set_figure(self):
-        start_time = time.time()
+    def get_figure(self):
         fig = go.Figure()
 
         for country in self.data:
@@ -46,5 +43,5 @@ class Map:
                 bgcolor="#222"
             )
         )
-        print(time.time() - start_time)
+
         return fig

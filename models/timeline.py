@@ -1,4 +1,3 @@
-import time
 from datetime import datetime
 
 import plotly.graph_objects as go
@@ -16,8 +15,7 @@ class Timeline:
         self.data = data
         self.dayone_mode = dayone_mode
 
-    def set_figure(self):
-        start_time = time.time()
+    def get_figure(self):
         fig = go.Figure()
 
         for res in self.data:
@@ -52,7 +50,7 @@ class Timeline:
                         name=res,
                         opacity=0.8))
                 else:
-                    graph_title = f'{self.countries[0]} cases' if self.dayone_mode is False else f'{self.countries[0]} {self.type} cases from day 0'
+                    graph_title = f'{self.countries[0]} {self.type} cases' if self.dayone_mode is False else f'{self.countries[0]} {self.type} cases from day 0'
                     fig.add_trace(go.Scatter(
                         x=data['dates'],
                         y=data['confirmed'],
@@ -100,5 +98,4 @@ class Timeline:
                 linecolor='#6F6F6F'
             ),
         )
-        print(time.time() - start_time)
         return fig

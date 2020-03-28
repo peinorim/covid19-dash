@@ -11,7 +11,7 @@ class Pie:
         self.country = country
         self.data = data
 
-    def set_figure(self):
+    def get_figure(self):
         fig = go.Figure()
         labels = ['Recovered', 'Deaths', 'Others']
         values = []
