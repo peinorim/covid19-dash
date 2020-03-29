@@ -11,7 +11,6 @@ class Forecast:
         self.type = type
         self.country = country
         self.data = data
-        self.figure = None
 
     def format_forecast(self):
         import pandas as pd
@@ -34,14 +33,14 @@ class Forecast:
         future = m.make_future_dataframe(periods=PERIODS)
         forecast = m.predict(future)
 
-        forecast_fig = plot_plotly(m, forecast, uncertainty=True, plot_cap=True, trend=True, changepoints=True,
-                                   changepoints_threshold=0.01)
+        fig = plot_plotly(m, forecast, uncertainty=True, plot_cap=True, trend=True, changepoints=True,
+                          changepoints_threshold=0.01)
 
-        forecast_fig['layout']['showlegend'] = True
-        forecast_fig['layout']['width'] = inf
-        forecast_fig['layout']['height'] = 700
+        fig['layout']['showlegend'] = True
+        fig['layout']['width'] = inf
+        fig['layout']['height'] = 700
 
-        forecast_fig.update_layout(
+        fig.update_layout(
             paper_bgcolor="#222",
             plot_bgcolor="#222",
             font=dict(
@@ -58,4 +57,4 @@ class Forecast:
             ),
             yaxis=dict(showgrid=True),
         )
-        self.figure = forecast_fig
+        return fig

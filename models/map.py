@@ -7,7 +7,6 @@ class Map:
         self.type = type
         self.data = data
         self.tots = tots
-        self.figure = None
 
     def set_figure(self):
         fig = go.Figure()
@@ -45,4 +44,4 @@ class Map:
             )
         )
 
-        self.figure = fig
+        return fig
