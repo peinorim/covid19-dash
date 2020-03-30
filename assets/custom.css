@@ -2,6 +2,11 @@
     display: none;
 }
 
+.footer {
+    text-align: center;
+    padding: 50px 0;
+}
+
 .Select-input > input {
     color: #eee;
 }
