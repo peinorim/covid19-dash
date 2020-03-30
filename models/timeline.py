@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 import plotly.graph_objects as go
@@ -16,6 +17,7 @@ class Timeline:
         self.dayone_mode = dayone_mode
 
     def set_figure(self):
+        start_time = time.time()
         fig = go.Figure()
 
         for res in self.data:
@@ -98,4 +100,5 @@ class Timeline:
                 linecolor='#6F6F6F'
             ),
         )
+        print(time.time() - start_time)
         return fig

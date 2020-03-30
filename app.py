@@ -74,12 +74,13 @@ for country in data:
         tots['recovered'] += data[country][-1].get('recovered', 0)
         tots['last_date'] = datetime.strptime(data[country][-1].get('date'), '%m/%d/%y')
 
-timeline_all = Timeline(data=data, countries=[], type=DEFAULT_TYPE)
-timeline_one = Timeline(data=data, countries=[DEFAULT_COUNTRY], type=DEFAULT_TYPE)
-timeline_dayone = Timeline(data=data, countries=[], type=DEFAULT_TYPE, dayone_mode=True)
-forecast = Forecast(data=data, country=DEFAULT_COUNTRY, type=DEFAULT_TYPE)
-map = Map(data=data, type=DEFAULT_TYPE, tots=tots)
-pie = Pie(data=data, country=DEFAULT_COUNTRY)
+
+timeline_all_start = Timeline(data=data, countries=[], type=DEFAULT_TYPE)
+timeline_one_start = Timeline(data=data, countries=[DEFAULT_COUNTRY], type=DEFAULT_TYPE)
+timeline_dayone_start = Timeline(data=data, countries=[], type=DEFAULT_TYPE, dayone_mode=True)
+forecast_start = Forecast(data=data, country=DEFAULT_COUNTRY, type=DEFAULT_TYPE)
+map_start = Map(data=data, type=DEFAULT_TYPE, tots=tots)
+pie_start = Pie(data=data, country=DEFAULT_COUNTRY)
 
 hidden = ''
 if os.environ.get('FORECAST', "0") != "1":
@@ -149,9 +150,9 @@ app.layout = html.Div(children=[
         ], className="col-md-12 row")
     ], className="row"),
     dbc.Row([
-        html.Div([dcc.Graph(id='timeline-all-graph', figure=timeline_all.set_figure())], className="col-md-6"),
-        html.Div([dcc.Graph(id='map-graph', figure=map.set_figure())], className="col-md-6"),
-        html.Div([dcc.Graph(id='timeline-dayone-graph', figure=timeline_dayone.set_figure())], className="col-md-12"),
+        html.Div([dcc.Graph(id='timeline-all-graph', figure=timeline_all_start.set_figure())], className="col-md-6"),
+        html.Div([dcc.Graph(id='map-graph', figure=map_start.set_figure())], className="col-md-6"),
+        html.Div([dcc.Graph(id='timeline-dayone-graph', figure=timeline_dayone_start.set_figure())], className="col-md-12"),
         html.Div(
             html.Div(
                 dcc.Dropdown(
@@ -164,9 +165,9 @@ app.layout = html.Div(children=[
                 ), className="col-md-3"
             ), className="col-md-12 row"
         ),
-        html.Div([dcc.Graph(id='timeline-one-graph', figure=timeline_one.set_figure())], className="col-md-6"),
-        html.Div([dcc.Graph(id='pie-one-graph', figure=pie.set_figure())], className="col-md-6"),
-        html.Div([dcc.Graph(id='forecast-graph', figure=forecast.set_figure())], className=f"col-md-12 {hidden}"),
+        html.Div([dcc.Graph(id='timeline-one-graph', figure=timeline_one_start.set_figure())], className="col-md-6"),
+        html.Div([dcc.Graph(id='pie-one-graph', figure=pie_start.set_figure())], className="col-md-6"),
+        html.Div([dcc.Graph(id='forecast-graph', figure=forecast_start.set_figure())], className=f"col-md-12 {hidden}"),
     ]
     ),
     html.Footer([
@@ -189,10 +190,10 @@ app.layout = html.Div(children=[
 @cache.memoize(timeout=TIMEOUT_STANDARD)
 def update_countries(countries, type):
     timeline_all = Timeline(data=data, countries=countries, type=type)
-    map = Map(data=data, type=type, tots=tots)
+    map_all = Map(data=data, type=type, tots=tots)
     timeline_dayone = Timeline(data=data, countries=countries, type=type, dayone_mode=True)
 
-    return timeline_all.set_figure(), map.set_figure(), timeline_dayone.set_figure()
+    return timeline_all.set_figure(), map_all.set_figure(), timeline_dayone.set_figure()
 
 
 @app.callback([
