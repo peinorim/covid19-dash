@@ -48,7 +48,8 @@ def get_cache():
 cache = get_cache()
 TIMEOUT_STANDARD = 3600 * 6
 
-TYPE = 'confirmed'
+DEFAULT_TYPE = 'confirmed'
+DEFAULT_COUNTRY = "France"
 data = Data().data
 
 countries = []
@@ -73,12 +74,12 @@ for country in data:
         tots['recovered'] += data[country][-1].get('recovered', 0)
         tots['last_date'] = datetime.strptime(data[country][-1].get('date'), '%m/%d/%y')
 
-timeline_all = Timeline(data=data, countries=[], type="confirmed")
-timeline_one = Timeline(data=data, countries=["France"], type="confirmed")
-timeline_dayone = Timeline(data=data, countries=[], type="confirmed", dayone_mode=True)
-forecast = Forecast(data=data, country="France", type="confirmed")
-map = Map(data=data, type="confirmed", tots=tots)
-pie = Pie(data=data, country="France")
+timeline_all = Timeline(data=data, countries=[], type=DEFAULT_TYPE)
+timeline_one = Timeline(data=data, countries=[DEFAULT_COUNTRY], type=DEFAULT_TYPE)
+timeline_dayone = Timeline(data=data, countries=[], type=DEFAULT_TYPE, dayone_mode=True)
+forecast = Forecast(data=data, country=DEFAULT_COUNTRY, type=DEFAULT_TYPE)
+map = Map(data=data, type=DEFAULT_TYPE, tots=tots)
+pie = Pie(data=data, country=DEFAULT_COUNTRY)
 
 hidden = ''
 if os.environ.get('FORECAST', "0") != "1":
