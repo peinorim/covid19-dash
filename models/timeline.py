@@ -28,7 +28,7 @@ class Timeline:
                 }
                 day_str = 0
                 for index, day in enumerate(self.data[res]):
-                    if (self.dayone_mode and day.get(self.type) > 10) or self.dayone_mode is False:
+                    if (self.dayone_mode and day.get(self.type) >= 100) or self.dayone_mode is False:
                         if self.dayone_mode:
                             data['dates'].append(f"Day {day_str}")
                             day_str += 1
