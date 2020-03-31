@@ -17,6 +17,7 @@ class Timeline:
 
     def set_figure(self):
         fig = go.Figure()
+        graph_title = ''
 
         for res in self.data:
             if self.countries is None or res in self.countries or len(self.countries) == 0:
@@ -41,9 +42,8 @@ class Timeline:
                         else:
                             data['recovered'].append(day.get('recovered'))
 
-
                 if len(self.countries) != 1:
-                    graph_title = self.type if self.dayone_mode is False else f'{self.type} cases from day 0'
+                    graph_title = f'{self.type} cases' if self.dayone_mode is False else f'{self.type} cases from day 0'
                     fig.add_trace(go.Scatter(
                         x=data['dates'],
                         y=data[self.type],

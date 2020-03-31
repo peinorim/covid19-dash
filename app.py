@@ -50,30 +50,37 @@ TIMEOUT_STANDARD = 3600 * 6
 
 DEFAULT_TYPE = 'confirmed'
 DEFAULT_COUNTRY = "France"
-data = Data().data
 
-countries = []
-types = [
-    {'label': "Confirmed", 'value': "confirmed"},
-    {'label': "Deaths", 'value': "deaths"},
-    {'label': "Recovered", 'value': "recovered"},
-]
 
-tots = {
-    'last_date': None,
-    'confirmed': 0,
-    'deaths': 0,
-    'recovered': 0
-}
+@cache.memoize(timeout=TIMEOUT_STANDARD)
+def init_data():
+    data = Data().data
 
-for country in data:
-    if len(data[country]) > 0:
-        countries.append({'label': country, 'value': country})
-        tots['confirmed'] += data[country][-1].get('confirmed', 0)
-        tots['deaths'] += data[country][-1].get('deaths', 0)
-        tots['recovered'] += data[country][-1].get('recovered', 0)
-        tots['last_date'] = datetime.strptime(data[country][-1].get('date'), '%m/%d/%y')
+    countries = []
+    types = [
+        {'label': "Confirmed", 'value': "confirmed"},
+        {'label': "Deaths", 'value': "deaths"},
+        {'label': "Recovered", 'value': "recovered"},
+    ]
 
+    tots = {
+        'last_date': None,
+        'confirmed': 0,
+        'deaths': 0,
+        'recovered': 0
+    }
+
+    for country in data:
+        if len(data[country]) > 0:
+            countries.append({'label': country, 'value': country})
+            tots['confirmed'] += data[country][-1].get('confirmed', 0)
+            tots['deaths'] += data[country][-1].get('deaths', 0)
+            tots['recovered'] += data[country][-1].get('recovered', 0)
+            tots['last_date'] = datetime.strptime(data[country][-1].get('date'), '%m/%d/%y')
+    return data, countries, types, tots
+
+
+data, countries, types, tots = init_data()
 
 timeline_all_start = Timeline(data=data, countries=[], type=DEFAULT_TYPE)
 timeline_one_start = Timeline(data=data, countries=[DEFAULT_COUNTRY], type=DEFAULT_TYPE)
@@ -97,7 +104,7 @@ app.layout = html.Div(children=[
                         dbc.CardBody(
                             [
                                 html.H4('{0:n}'.format(tots['confirmed']), className="card-title"),
-                                html.H6("Confirmed cases", className="card-subtitle")
+                                html.H6("Confirmed", className="card-subtitle")
                             ]
                         )
                     ), className="col-md-4"
@@ -152,7 +159,8 @@ app.layout = html.Div(children=[
     dbc.Row([
         html.Div([dcc.Graph(id='timeline-all-graph', figure=timeline_all_start.set_figure())], className="col-md-6"),
         html.Div([dcc.Graph(id='map-graph', figure=map_start.set_figure())], className="col-md-6"),
-        html.Div([dcc.Graph(id='timeline-dayone-graph', figure=timeline_dayone_start.set_figure())], className="col-md-12"),
+        html.Div([dcc.Graph(id='timeline-dayone-graph', figure=timeline_dayone_start.set_figure())],
+                 className="col-md-12"),
         html.Div(
             html.Div(
                 dcc.Dropdown(
@@ -187,7 +195,6 @@ app.layout = html.Div(children=[
         Input(component_id='types-dropdown', component_property='value'),
     ]
 )
-@cache.memoize(timeout=TIMEOUT_STANDARD)
 def update_countries(countries, type):
     timeline_all = Timeline(data=data, countries=countries, type=type)
     map_all = Map(data=data, type=type, tots=tots)
@@ -206,7 +213,6 @@ def update_countries(countries, type):
         Input(component_id='types-dropdown', component_property='value'),
     ]
 )
-@cache.memoize(timeout=TIMEOUT_STANDARD)
 def update_country(country, type):
     timeline_one = Timeline(data=data, countries=[country], type=type)
     forecast = Forecast(data=data, country=country, type=type)
