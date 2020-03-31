@@ -37,7 +37,7 @@ def get_cache():
             'CACHE_REDIS_DB': os.environ.get('REDIS_DB', '0'),
             'CACHE_REDIS_PASSWORD': os.environ.get('REDIS_PASSWORD', 'root')
         })
-    except Exception:
+    except ConnectionError:
         return Cache(app.server, config={
             'CACHE_TYPE': 'filesystem',
             'CACHE_DIR': 'cache-directory'
