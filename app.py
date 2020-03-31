@@ -46,7 +46,7 @@ def get_cache():
 
 
 cache = get_cache()
-TIMEOUT_STANDARD = 3600 * 6
+TIMEOUT_STANDARD = 3600 * 8
 
 DEFAULT_TYPE = 'confirmed'
 DEFAULT_COUNTRY = "France"
