@@ -93,8 +93,8 @@ if os.environ.get('FORECAST', "0") != "1":
     hidden = 'hidden'
 
 app.layout = html.Div(children=[
-    html.H1(f"COVID-19 Worldwide data", style={"textAlign": "center", "padding": "10px 0"}),
-    html.H6(f"Last update on : {tots['last_date']:%Y-%m-%d}", style={"textAlign": "center", "padding": "10px 0"}),
+    html.H1(f"COVID-19 Worldwide data", style={"textAlign": "center", "padding": "20px 0 10px 0"}),
+    html.H6(f"Last update on : {tots['last_date']:%Y-%m-%d}", style={"textAlign": "center", "paddingBottom": "20px"}),
     html.Header([
         dbc.Row(
             [
