@@ -49,6 +49,7 @@ TIMEOUT_STANDARD = 3600 * 8
 
 DEFAULT_TYPE = 'confirmed'
 DEFAULT_COUNTRY = "France"
+DEFAULT_COUNTRIES = ["US", "France", "United Kingdom", "Spain", "Italy", "Germany"]
 
 
 @cache.memoize(timeout=TIMEOUT_STANDARD)
@@ -81,9 +82,9 @@ def init_data():
 
 data, countries, types, tots = init_data()
 
-timeline_all_start = Timeline(data=data, countries=[], type=DEFAULT_TYPE)
+timeline_all_start = Timeline(data=data, countries=DEFAULT_COUNTRIES, type=DEFAULT_TYPE)
 timeline_one_start = Timeline(data=data, countries=[DEFAULT_COUNTRY], type=DEFAULT_TYPE)
-timeline_dayone_start = Timeline(data=data, countries=[], type=DEFAULT_TYPE, dayone_mode=True)
+timeline_dayone_start = Timeline(data=data, countries=DEFAULT_COUNTRIES, type=DEFAULT_TYPE, dayone_mode=True)
 forecast_start = Forecast(data=data, country=DEFAULT_COUNTRY, type=DEFAULT_TYPE)
 map_start = Map(data=data, type=DEFAULT_TYPE, tots=tots)
 pie_start = Pie(data=data, country=DEFAULT_COUNTRY)
@@ -141,6 +142,7 @@ app.layout = html.Div(children=[
                     options=countries,
                     multi=True,
                     placeholder="Select one or several countries",
+                    value=DEFAULT_COUNTRIES
                 ), className="col-md-3"
             ),
             html.Div(
@@ -149,7 +151,7 @@ app.layout = html.Div(children=[
                     options=types,
                     multi=False,
                     clearable=False,
-                    value="confirmed",
+                    value=DEFAULT_TYPE,
                     placeholder="Select a type of data",
                 ), className="col-md-3"
             )
