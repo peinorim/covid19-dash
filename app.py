@@ -49,7 +49,7 @@ TIMEOUT_STANDARD = 3600 * 8
 
 DEFAULT_TYPE = 'confirmed'
 DEFAULT_COUNTRY = "France"
-DEFAULT_COUNTRIES = ["US", "France", "United Kingdom", "Spain", "Italy", "Germany"]
+DEFAULT_COUNTRIES = ["US", "France", "United Kingdom", "Spain", "Italy", "Germany", "Hubei"]
 
 
 @cache.memoize(timeout=TIMEOUT_STANDARD)

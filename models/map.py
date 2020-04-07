@@ -12,12 +12,17 @@ class Map:
         fig = go.Figure()
 
         for country in self.data:
+            if not self.data[country]:
+                continue
+            if self.type not in self.data[country][-1]:
+                self.data[country][-1].update({self.type: 0})
+
             if self.data[country] and self.data[country][-1][self.type] and self.data[country][-1].get('long') and \
                     self.data[country][-1].get('lat'):
                 fig.add_trace(go.Scattergeo(
                     lon=[self.data[country][-1]['long']],
                     lat=[self.data[country][-1]['lat']],
-                    text=f'{country} : {self.data[country][-1][self.type]} cases',
+                    text=f'{country} : {self.data[country][-1][self.type]} {self.type}',
                     marker=dict(
                         size=round(self.data[country][-1][self.type] / (self.tots[self.type] / 400), 0),
                         line_color='rgb(40,40,40,0.6)',
