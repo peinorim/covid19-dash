@@ -24,7 +24,7 @@ class Bar:
                 data['dates'].append(datetime.strptime(day['date'], '%m/%d/%y'))
                 data['cases'].append(day.get(self.type) - self.data[previous].get(self.type))
 
-        graph_title = f'{self.type} cases evolution'
+        graph_title = f'{self.country} {self.type} cases evolution over time'
         fig.add_trace(go.Bar(
             x=data['dates'],
             y=data['cases'],
