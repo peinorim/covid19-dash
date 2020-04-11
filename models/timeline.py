@@ -1,9 +1,6 @@
 from datetime import datetime
 
 import plotly.graph_objects as go
-import dash
-
-app = dash.Dash(__name__)
 
 
 class Timeline:

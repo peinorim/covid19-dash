@@ -10,6 +10,8 @@ import dash_bootstrap_components as dbc
 import redis
 from dash.dependencies import Input, Output
 from flask_caching import Cache
+
+from models.bar import Bar
 from models.data import Data
 from models.forecast import Forecast
 from models.map import Map
@@ -27,7 +29,7 @@ def get_cache():
             host=os.environ.get('REDIS_HOST', '127.0.0.1'),
             port=os.environ.get('REDIS_PORT', '6379'),
             db=os.environ.get('REDIS_DB', '0'),
-            password=os.environ.get('REDIS_PASSWORD', 'root')
+            password=os.environ.get('REDIS_PASSWORD', '')
         )
         rs.ping()
         return Cache(app.server, config={
@@ -35,7 +37,7 @@ def get_cache():
             'CACHE_REDIS_HOST': os.environ.get('REDIS_HOST', '127.0.0.1'),
             'CACHE_REDIS_PORT': os.environ.get('REDIS_PORT', '6379'),
             'CACHE_REDIS_DB': os.environ.get('REDIS_DB', '0'),
-            'CACHE_REDIS_PASSWORD': os.environ.get('REDIS_PASSWORD', 'root')
+            'CACHE_REDIS_PASSWORD': os.environ.get('REDIS_PASSWORD', '')
         })
     except ConnectionError:
         return Cache(app.server, config={
@@ -87,7 +89,8 @@ timeline_one_start = Timeline(data=data, countries=[DEFAULT_COUNTRY], type=DEFAU
 timeline_dayone_start = Timeline(data=data, countries=DEFAULT_COUNTRIES, type=DEFAULT_TYPE, dayone_mode=True)
 forecast_start = Forecast(data=data, country=DEFAULT_COUNTRY, type=DEFAULT_TYPE)
 map_start = Map(data=data, type=DEFAULT_TYPE, tots=tots)
-pie_start = Pie(data=data, country=DEFAULT_COUNTRY)
+pie_start = Pie(data=data[DEFAULT_COUNTRY], country=DEFAULT_COUNTRY)
+bar = Bar(data=data[DEFAULT_COUNTRY], type=DEFAULT_TYPE, country=DEFAULT_COUNTRY)
 
 hidden = ''
 if os.environ.get('FORECAST', "0") != "1":
@@ -176,6 +179,7 @@ app.layout = html.Div(children=[
         ),
         html.Div([dcc.Graph(id='timeline-one-graph', figure=timeline_one_start.set_figure())], className="col-md-6"),
         html.Div([dcc.Graph(id='pie-one-graph', figure=pie_start.set_figure())], className="col-md-6"),
+        html.Div([dcc.Graph(id='bar-graph', figure=bar.set_figure())], className="col-md-12"),
         html.Div([dcc.Graph(id='forecast-graph', figure=forecast_start.set_figure())], className=f"col-md-12 {hidden}"),
     ]
     ),
@@ -197,17 +201,18 @@ app.layout = html.Div(children=[
     ]
 )
 def update_countries(countries, type):
-    timeline_all = Timeline(data=data, countries=countries, type=type)
-    map_all = Map(data=data, type=type, tots=tots)
-    timeline_dayone = Timeline(data=data, countries=countries, type=type, dayone_mode=True)
+    new_timeline_all = Timeline(data=data, countries=countries, type=type)
+    new_map_all = Map(data=data, type=type, tots=tots)
+    new_timeline_dayone = Timeline(data=data, countries=countries, type=type, dayone_mode=True)
 
-    return timeline_all.set_figure(), map_all.set_figure(), timeline_dayone.set_figure()
+    return new_timeline_all.set_figure(), new_map_all.set_figure(), new_timeline_dayone.set_figure()
 
 
 @app.callback([
     Output(component_id='timeline-one-graph', component_property='figure'),
     Output(component_id='forecast-graph', component_property='figure'),
     Output(component_id='pie-one-graph', component_property='figure'),
+    Output(component_id='bar-graph', component_property='figure'),
 ],
     [
         Input(component_id='country-dropdown', component_property='value'),
@@ -215,11 +220,12 @@ def update_countries(countries, type):
     ]
 )
 def update_country(country, type):
-    timeline_one = Timeline(data=data, countries=[country], type=type)
-    forecast = Forecast(data=data, country=country, type=type)
-    pie = Pie(data=data, country=country)
+    new_timeline_one = Timeline(data=data, countries=[country], type=type)
+    new_forecast = Forecast(data=data, country=country, type=type)
+    new_pie = Pie(data=data[country], country=country)
+    new_bar = Bar(data=data[country], country=country, type=type)
 
-    return timeline_one.set_figure(), forecast.set_figure(), pie.set_figure()
+    return new_timeline_one.set_figure(), new_forecast.set_figure(), new_pie.set_figure(), new_bar.set_figure()
 
 
 if __name__ == '__main__':

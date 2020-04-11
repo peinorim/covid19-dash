@@ -1,6 +1,3 @@
-import dash
-
-app = dash.Dash(__name__)
 import plotly.graph_objects as go
 
 
@@ -16,7 +13,7 @@ class Pie:
         labels = ['Recovered', 'Deaths', 'Others']
         values = []
 
-        last_data_country = self.data[self.country][-1]
+        last_data_country = self.data[-1]
         recov = round((last_data_country['recovered'] / last_data_country['confirmed']) * 100, 1)
         deat = round((last_data_country['deaths'] / last_data_country['confirmed']) * 100, 1)
         values.append(recov)
