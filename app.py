@@ -88,7 +88,7 @@ timeline_all_start = Timeline(data=data, countries=DEFAULT_COUNTRIES, type=DEFAU
 timeline_one_start = Timeline(data=data, countries=[DEFAULT_COUNTRY], type=DEFAULT_TYPE)
 timeline_dayone_start = Timeline(data=data, countries=DEFAULT_COUNTRIES, type=DEFAULT_TYPE, dayone_mode=True)
 forecast_start = Forecast(data=data, country=DEFAULT_COUNTRY, type=DEFAULT_TYPE)
-map_start = Map(data=data, type=DEFAULT_TYPE, tots=tots)
+map_start = Map(data=data, countries=DEFAULT_COUNTRIES, type=DEFAULT_TYPE, tots=tots)
 pie_start = Pie(data=data[DEFAULT_COUNTRY], country=DEFAULT_COUNTRY)
 bar = Bar(data=data[DEFAULT_COUNTRY], type=DEFAULT_TYPE, country=DEFAULT_COUNTRY)
 
@@ -202,7 +202,7 @@ app.layout = html.Div(children=[
 )
 def update_countries(countries, type):
     new_timeline_all = Timeline(data=data, countries=countries, type=type)
-    new_map_all = Map(data=data, type=type, tots=tots)
+    new_map_all = Map(data=data, countries=countries, type=type, tots=tots)
     new_timeline_dayone = Timeline(data=data, countries=countries, type=type, dayone_mode=True)
 
     return new_timeline_all.set_figure(), new_map_all.set_figure(), new_timeline_dayone.set_figure()

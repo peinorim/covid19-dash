@@ -3,15 +3,18 @@ import plotly.graph_objects as go
 
 class Map:
 
-    def __init__(self, data=None, type=None, tots=None):
+    def __init__(self, data=None, countries=None, type=None, tots=None):
         self.type = type
         self.data = data
         self.tots = tots
+        self.countries = countries if countries else []
 
     def set_figure(self):
         fig = go.Figure()
 
-        for country in self.data:
+        iteration = self.countries if len(self.countries) > 0 else self.data
+
+        for country in iteration:
             if not self.data[country]:
                 continue
             if self.type not in self.data[country][-1]:

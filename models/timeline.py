@@ -8,7 +8,7 @@ class Timeline:
     def __init__(self, data=None, countries=None, type=None, dayone_mode=False):
 
         self.type = type
-        self.countries = countries if countries else list()
+        self.countries = countries if countries else []
         self.data = data
         self.dayone_mode = dayone_mode
 
@@ -16,55 +16,56 @@ class Timeline:
         fig = go.Figure()
         graph_title = ''
 
-        for res in self.data:
-            if self.countries is None or res in self.countries or len(self.countries) == 0:
-                data = {
-                    "dates": [],
-                    "confirmed": [],
-                    "deaths": [],
-                    "recovered": []
-                }
-                day_str = 0
-                for index, day in enumerate(self.data[res]):
-                    if (self.dayone_mode and day.get(self.type) >= 100) or self.dayone_mode is False:
-                        if self.dayone_mode:
-                            data['dates'].append(f"Day {day_str}")
-                            day_str += 1
-                        else:
-                            data['dates'].append(datetime.strptime(day['date'], '%m/%d/%y'))
-                        data['confirmed'].append(day.get('confirmed'))
-                        data['deaths'].append(day.get('deaths'))
-                        if day.get('recovered') is None:
-                            data['recovered'].append(self.data[res][index - 1].get('recovered'))
-                        else:
-                            data['recovered'].append(day.get('recovered'))
+        iteration = self.countries if len(self.countries) > 0 else self.data
 
-                if len(self.countries) != 1:
-                    graph_title = f'{self.type} cases' if self.dayone_mode is False else f'{self.type} cases from day 0'
-                    fig.add_trace(go.Scatter(
-                        x=data['dates'],
-                        y=data[self.type],
-                        name=res,
-                        opacity=0.8))
-                else:
-                    graph_title = f'{self.countries[0]} cases' if self.dayone_mode is False else f'{self.countries[0]} {self.type} cases from day 0'
-                    fig.add_trace(go.Scatter(
-                        x=data['dates'],
-                        y=data['confirmed'],
-                        name="confirmed",
-                        opacity=0.8))
+        for country in iteration:
+            data = {
+                "dates": [],
+                "confirmed": [],
+                "deaths": [],
+                "recovered": []
+            }
+            day_str = 0
+            for index, day in enumerate(self.data[country]):
+                if (self.dayone_mode and day.get(self.type) >= 100) or self.dayone_mode is False:
+                    if self.dayone_mode:
+                        data['dates'].append(f"Day {day_str}")
+                        day_str += 1
+                    else:
+                        data['dates'].append(datetime.strptime(day['date'], '%m/%d/%y'))
+                    data['confirmed'].append(day.get('confirmed'))
+                    data['deaths'].append(day.get('deaths'))
+                    if day.get('recovered') is None:
+                        data['recovered'].append(self.data[country][index - 1].get('recovered'))
+                    else:
+                        data['recovered'].append(day.get('recovered'))
 
-                    fig.add_trace(go.Scatter(
-                        x=data['dates'],
-                        y=data['deaths'],
-                        name="deaths",
-                        opacity=0.8))
+            if len(self.countries) != 1:
+                graph_title = f'{self.type} cases' if self.dayone_mode is False else f'{self.type} cases from day 0'
+                fig.add_trace(go.Scatter(
+                    x=data['dates'],
+                    y=data[self.type],
+                    name=country,
+                    opacity=0.8))
+            else:
+                graph_title = f'{self.countries[0]} cases' if self.dayone_mode is False else f'{self.countries[0]} {self.type} cases from day 0'
+                fig.add_trace(go.Scatter(
+                    x=data['dates'],
+                    y=data['confirmed'],
+                    name="confirmed",
+                    opacity=0.8))
 
-                    fig.add_trace(go.Scatter(
-                        x=data['dates'],
-                        y=data['recovered'],
-                        name="recovered",
-                        opacity=0.8))
+                fig.add_trace(go.Scatter(
+                    x=data['dates'],
+                    y=data['deaths'],
+                    name="deaths",
+                    opacity=0.8))
+
+                fig.add_trace(go.Scatter(
+                    x=data['dates'],
+                    y=data['recovered'],
+                    name="recovered",
+                    opacity=0.8))
 
         # Use date string to set xaxis range
         fig['layout']['showlegend'] = True
