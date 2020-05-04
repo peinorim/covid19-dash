@@ -177,8 +177,8 @@ app.layout = html.Div(children=[
                 ), className="col-md-3"
             ), className="col-md-12 row"
         ),
-        html.Div([dcc.Graph(id='timeline-one-graph', figure=timeline_one_start.set_figure())], className="col-md-6"),
-        html.Div([dcc.Graph(id='pie-one-graph', figure=pie_start.set_figure())], className="col-md-6"),
+        html.Div([dcc.Graph(id='timeline-one-graph', figure=timeline_one_start.set_figure())], className="col-md-7"),
+        html.Div([dcc.Graph(id='pie-one-graph', figure=pie_start.set_figure())], className="col-md-5"),
         html.Div([dcc.Graph(id='bar-graph', figure=bar.set_figure())], className="col-md-12"),
         html.Div([dcc.Graph(id='forecast-graph', figure=forecast_start.set_figure())], className=f"col-md-12 {hidden}"),
     ]
