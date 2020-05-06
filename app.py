@@ -78,7 +78,7 @@ def init_data():
             tots['confirmed'] += data[country][-1].get('confirmed', 0)
             tots['deaths'] += data[country][-1].get('deaths', 0)
             tots['recovered'] += data[country][-1].get('recovered', 0)
-            tots['last_date'] = datetime.strptime(data[country][-1].get('date'), '%m/%d/%y')
+            tots['last_date'] = datetime.strptime(data[country][-1].get('date'), '%Y-%m-%d')
     return data, countries, types, tots
 
 

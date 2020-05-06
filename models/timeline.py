@@ -32,7 +32,7 @@ class Timeline:
                         data['dates'].append(f"Day {day_str}")
                         day_str += 1
                     else:
-                        data['dates'].append(datetime.strptime(day['date'], '%m/%d/%y'))
+                        data['dates'].append(datetime.strptime(day['date'], '%Y-%m-%d'))
                     data['confirmed'].append(day.get('confirmed'))
                     data['deaths'].append(day.get('deaths'))
                     if day.get('recovered') is None:

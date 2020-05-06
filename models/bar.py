@@ -21,7 +21,7 @@ class Bar:
         for index, day in enumerate(self.data):
             if day.get(self.type) >= 100 and self.data[index - 1]:
                 previous = 0 if index == 0 else index - 1
-                data['dates'].append(datetime.strptime(day['date'], '%m/%d/%y'))
+                data['dates'].append(datetime.strptime(day['date'], '%Y-%m-%d'))
                 data['cases'].append(day.get(self.type) - self.data[previous].get(self.type))
 
         graph_title = f'{self.country} {self.type} cases evolution over time'
