@@ -1,3 +1,4 @@
 .idea
 /python_interpreter/
 __pycache__
+models/data.json
