@@ -24,26 +24,20 @@ locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
 def get_cache():
-    try:
-        rs = redis.StrictRedis(
-            host=os.environ.get('REDIS_HOST', '127.0.0.1'),
-            port=os.environ.get('REDIS_PORT', '6379'),
-            db=os.environ.get('REDIS_DB', '0'),
-            password=os.environ.get('REDIS_PASSWORD', '')
-        )
-        rs.ping()
-        return Cache(app.server, config={
-            'CACHE_TYPE': 'redis',
-            'CACHE_REDIS_HOST': os.environ.get('REDIS_HOST', '127.0.0.1'),
-            'CACHE_REDIS_PORT': os.environ.get('REDIS_PORT', '6379'),
-            'CACHE_REDIS_DB': os.environ.get('REDIS_DB', '0'),
-            'CACHE_REDIS_PASSWORD': os.environ.get('REDIS_PASSWORD', '')
-        })
-    except ConnectionError:
-        return Cache(app.server, config={
-            'CACHE_TYPE': 'filesystem',
-            'CACHE_DIR': 'cache-directory'
-        })
+    rs = redis.StrictRedis(
+        host=os.environ.get('REDIS_HOST', '127.0.0.1'),
+        port=os.environ.get('REDIS_PORT', '6379'),
+        db=os.environ.get('REDIS_DB', '0'),
+        password=os.environ.get('REDIS_PASSWORD', '')
+    )
+    rs.ping()
+    return Cache(app.server, config={
+        'CACHE_TYPE': 'redis',
+        'CACHE_REDIS_HOST': os.environ.get('REDIS_HOST', '127.0.0.1'),
+        'CACHE_REDIS_PORT': os.environ.get('REDIS_PORT', '6379'),
+        'CACHE_REDIS_DB': os.environ.get('REDIS_DB', '0'),
+        'CACHE_REDIS_PASSWORD': os.environ.get('REDIS_PASSWORD', '')
+    })
 
 
 cache = get_cache()
