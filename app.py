@@ -86,7 +86,7 @@ def vaccine_data():
             'n_cum_dose2': []
         }
         for data in json_data:
-            vaccine_france_data.get('date').append(data.get('jour'))
+            vaccine_france_data.get('date').append(datetime.strptime(data.get('jour'), '%Y-%m-%d'))
             vaccine_france_data.get('n_cum_dose1').append(data.get('n_cum_dose1'))
             vaccine_france_data.get('n_cum_dose2').append(data.get('n_cum_dose2'))
         return vaccine_france_data
