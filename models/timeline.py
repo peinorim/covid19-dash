@@ -12,6 +12,47 @@ class Timeline:
         self.data = data
         self.dayone_mode = dayone_mode
 
+    def set_vaccine_figure(self, title=None):
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=self.data['date'],
+            y=self.data['n_cum_dose1'],
+            name="First dose given",
+            opacity=0.8))
+        fig.add_trace(go.Scatter(
+            x=self.data['date'],
+            y=self.data['n_cum_dose2'],
+            name="Second dose given",
+            opacity=0.8))
+
+        fig['layout']['showlegend'] = True
+        fig['layout']['height'] = 700
+
+        fig.update_layout(
+            paper_bgcolor="#222",
+            plot_bgcolor="#222",
+            title=title,
+            titlefont={"color": "#c9c9c9"},
+            font=dict(
+                color="#c9c9c9"
+            ),
+            xaxis=go.layout.XAxis(
+                tickformat="%Y-%m-%d",
+                gridcolor="#6F6F6F",
+                linecolor='#6F6F6F',
+                rangeslider=dict(
+                    visible=True
+                )
+            ),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor="#6F6F6F",
+                tickfont={"color": "#c9c9c9"},
+                linecolor='#6F6F6F'
+            ),
+        )
+        return fig
+
     def set_figure(self):
         fig = go.Figure()
         graph_title = ''

@@ -11,6 +11,50 @@ class Bar:
         self.country = country
         self.data = data
 
+    def set_hosp_data(self, title=None):
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            x=self.data['date'],
+            y=self.data['hosp'],
+            name="Hospitalisation",
+            opacity=0.8))
+
+        fig.add_trace(go.Bar(
+            x=self.data['date'],
+            y=self.data['rea'],
+            name="Reanimation",
+            opacity=0.8))
+
+        # Use date string to set xaxis range
+        fig['layout']['showlegend'] = True
+        fig['layout']['height'] = 700
+
+        fig.update_layout(
+            paper_bgcolor="#222",
+            plot_bgcolor="#222",
+            title=title,
+            titlefont={"color": "#c9c9c9"},
+            font=dict(
+                color="#c9c9c9"
+            ),
+            xaxis=go.layout.XAxis(
+                autorange=True,
+                tickformat="%Y-%m-%d",
+                gridcolor="#6F6F6F",
+                linecolor='#6F6F6F',
+                rangeslider=dict(
+                    visible=True
+                )
+            ),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor="#6F6F6F",
+                tickfont={"color": "#c9c9c9"},
+                linecolor='#6F6F6F'
+            ),
+        )
+        return fig
+
     def set_figure(self):
         fig = go.Figure()
         data = {

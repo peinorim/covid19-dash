@@ -1,5 +1,26 @@
 from datetime import datetime
 import pandas as pd
+import requests
+
+
+class FranceData:
+
+    def hosp_data(self):
+
+        hosp_data = pd.read_csv("https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7")
+        lines = list()
+        for index, line in enumerate(hosp_data.values):
+            line_data = list(line)[0]
+            lines.append(line_data)
+        return lines
+
+    def vaccine_data(self):
+        resp = requests.get('https://www.data.gouv.fr/fr/datasets/r/3c8e4999-df8f-4683-a2a8-6bae13813c39', verify=False)
+        try:
+            resp.raise_for_status()
+            return resp.json()
+        except Exception as e:
+            raise Exception(f'Unable to get vaccine data : {e}')
 
 
 class Data:

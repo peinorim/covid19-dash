@@ -12,7 +12,7 @@ from dash.dependencies import Input, Output
 from flask_caching import Cache
 
 from models.bar import Bar
-from models.data import Data
+from models.data import Data, FranceData
 from models.forecast import Forecast
 from models.map import Map
 from models.pie import Pie
@@ -76,7 +76,53 @@ def init_data():
     return data, countries, types, tots
 
 
+@cache.memoize(timeout=TIMEOUT_STANDARD)
+def vaccine_data():
+    json_data = FranceData().vaccine_data()
+    if json_data:
+        vaccine_france_data = {
+            'date': [],
+            'n_cum_dose1': [],
+            'n_cum_dose2': []
+        }
+        for data in json_data:
+            vaccine_france_data.get('date').append(data.get('jour'))
+            vaccine_france_data.get('n_cum_dose1').append(data.get('n_cum_dose1'))
+            vaccine_france_data.get('n_cum_dose2').append(data.get('n_cum_dose2'))
+        return vaccine_france_data
+
+
+@cache.memoize(timeout=TIMEOUT_STANDARD)
+def hosp_data():
+    list_data = FranceData().hosp_data()
+    hosp_france_data = {
+        'date': [],
+        'hosp': [],
+        'rea': []
+    }
+    for data in list_data:
+        raw_data = data.split(';')
+        if int(raw_data[1].replace('"', '')) == 0:
+            if raw_data[2].replace('"', '') not in hosp_france_data.get('date'):
+                hosp_france_data.get('date').append(raw_data[2].replace('"', ''))
+
+            index = hosp_france_data.get('date').index(raw_data[2].replace('"', ''))
+
+            if len(hosp_france_data.get('hosp')) == index:
+                hosp_france_data.get('hosp').append(int(raw_data[3]))
+            else:
+                hosp_france_data.get('hosp')[index] += int(raw_data[3])
+
+            if len(hosp_france_data.get('rea')) == index:
+                hosp_france_data.get('rea').append(int(raw_data[4]))
+            else:
+                hosp_france_data.get('rea')[index] += int(raw_data[4])
+    return hosp_france_data
+
+
 data, countries, types, tots = init_data()
+vaccine_data = vaccine_data()
+hosp_data = hosp_data()
 
 timeline_all_start = Timeline(data=data, countries=DEFAULT_COUNTRIES, type=DEFAULT_TYPE)
 timeline_one_start = Timeline(data=data, countries=[DEFAULT_COUNTRY], type=DEFAULT_TYPE)
@@ -85,6 +131,8 @@ forecast_start = Forecast(data=data, country=DEFAULT_COUNTRY, type=DEFAULT_TYPE)
 map_start = Map(data=data, countries=DEFAULT_COUNTRIES, type=DEFAULT_TYPE, tots=tots)
 pie_start = Pie(data=data[DEFAULT_COUNTRY], country=DEFAULT_COUNTRY)
 bar = Bar(data=data[DEFAULT_COUNTRY], type=DEFAULT_TYPE, country=DEFAULT_COUNTRY)
+timeline_france_vaccine = Timeline(data=vaccine_data, type=DEFAULT_TYPE)
+bar_france_hosp = Bar(data=hosp_data, type=DEFAULT_TYPE)
 
 hidden = ''
 if os.environ.get('FORECAST', "0") != "1":
@@ -175,6 +223,12 @@ app.layout = html.Div(children=[
         html.Div([dcc.Graph(id='pie-one-graph', figure=pie_start.set_figure())], className="col-md-5"),
         html.Div([dcc.Graph(id='bar-graph', figure=bar.set_figure())], className="col-md-12"),
         html.Div([dcc.Graph(id='forecast-graph', figure=forecast_start.set_figure())], className=f"col-md-12 {hidden}"),
+        html.Div([dcc.Graph(id='timeline-france-vaccines',
+                            figure=timeline_france_vaccine.set_vaccine_figure(title='France vaccines'))],
+                 className="col-md-6"),
+        html.Div(
+            [dcc.Graph(id='bar-france-hosp', figure=bar_france_hosp.set_hosp_data(title="France hospitalisation"))],
+            className="col-md-6"),
     ]
     ),
     html.Footer([
