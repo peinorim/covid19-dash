@@ -93,7 +93,7 @@ def vaccine_data():
         return vaccine_france_data
 
 
-# @cache.memoize(timeout=TIMEOUT_STANDARD)
+@cache.memoize(timeout=TIMEOUT_STANDARD)
 def hosp_data():
     list_data = FranceData().hosp_data()
     hosp_france_data = {
@@ -241,7 +241,7 @@ app.layout = html.Div(children=[
                 dbc.CardBody(
                     [
                         html.H4(
-                            f"{'{0:n}'.format(hosp_data.get('hosp')[-1])} ({'+ ' if hosp_data.get('hosp')[-1] - hosp_data.get('hosp')[-2] > 0 else '- '}{'{0:n}'.format(hosp_data.get('hosp')[-1] - hosp_data.get('hosp')[-2])})",
+                            f"{'{0:n}'.format(hosp_data.get('hosp')[-1])} ({'{0:n}'.format(hosp_data.get('hosp')[-1] - hosp_data.get('hosp')[-2])})",
                             className="card-title"),
                         html.H6(f"Nb of hospitalization on {hosp_data.get('date')[-1]}", className="card-subtitle")
                     ]
@@ -253,7 +253,7 @@ app.layout = html.Div(children=[
                 dbc.CardBody(
                     [
                         html.H4(
-                            f"{'{0:n}'.format(hosp_data.get('rea')[-1])} ({'+ ' if hosp_data.get('rea')[-1] - hosp_data.get('rea')[-2] > 0 else '- '}{'{0:n}'.format(hosp_data.get('rea')[-1] - hosp_data.get('rea')[-2])})",
+                            f"{'{0:n}'.format(hosp_data.get('rea')[-1])} ({'{0:n}'.format(hosp_data.get('rea')[-1] - hosp_data.get('rea')[-2])})",
                             className="card-title"),
                         html.H6(f"Nb of reanimation on {hosp_data.get('date')[-1]}", className="card-subtitle")
                     ]
