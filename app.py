@@ -229,7 +229,7 @@ app.layout = html.Div(children=[
                 dbc.CardBody(
                     [
                         html.H4(
-                            f"{'{0:n}'.format(vaccine_data.get('n_cum_dose1')[-1])} ({'+ ' if vaccine_data.get('n_cum_dose1')[-1] - vaccine_data.get('n_cum_dose1')[-2] > 0 else '- '}{'{0:n}'.format(vaccine_data.get('n_cum_dose1')[-1] - vaccine_data.get('n_cum_dose1')[-2])})",
+                            f"{'{0:n}'.format(vaccine_data.get('n_cum_dose1')[-1])} (+{'{0:n}'.format(vaccine_data.get('n_cum_dose1')[-1] - vaccine_data.get('n_cum_dose1')[-2])})",
                             className="card-title"),
                         html.H6(f"Nb of 1st dose given on {vaccine_data.get('date')[-1]:%Y-%m-%d }", className="card-subtitle")
                     ]
