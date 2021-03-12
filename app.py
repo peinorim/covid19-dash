@@ -41,7 +41,7 @@ def get_cache():
 
 
 cache = get_cache()
-TIMEOUT_STANDARD = 3600 * 8
+TIMEOUT_STANDARD = 3600 * 4
 
 DEFAULT_TYPE = 'confirmed'
 DEFAULT_COUNTRY = "France"
@@ -241,7 +241,7 @@ app.layout = html.Div(children=[
                 dbc.CardBody(
                     [
                         html.H4(
-                            f"{'{0:n}'.format(hosp_data.get('hosp')[-1])} ({'{0:n}'.format(hosp_data.get('hosp')[-1] - hosp_data.get('hosp')[-2])})",
+                            f"{'{0:n}'.format(hosp_data.get('hosp')[-1])} ({'+' if hosp_data.get('hosp')[-1] - hosp_data.get('hosp')[-2] > 0 else ''}{'{0:n}'.format(hosp_data.get('hosp')[-1] - hosp_data.get('hosp')[-2])})",
                             className="card-title"),
                         html.H6(f"Nb of hospitalization on {hosp_data.get('date')[-1]}", className="card-subtitle")
                     ]
@@ -253,7 +253,7 @@ app.layout = html.Div(children=[
                 dbc.CardBody(
                     [
                         html.H4(
-                            f"{'{0:n}'.format(hosp_data.get('rea')[-1])} ({'{0:n}'.format(hosp_data.get('rea')[-1] - hosp_data.get('rea')[-2])})",
+                            f"{'{0:n}'.format(hosp_data.get('rea')[-1])} ({'+' if hosp_data.get('rea')[-1] - hosp_data.get('rea')[-2] > 0 else ''}{'{0:n}'.format(hosp_data.get('rea')[-1] - hosp_data.get('rea')[-2])})",
                             className="card-title"),
                         html.H6(f"Nb of reanimation on {hosp_data.get('date')[-1]}", className="card-subtitle")
                     ]
