@@ -41,7 +41,7 @@ def get_cache():
 
 
 cache = get_cache()
-TIMEOUT_STANDARD = 3600 * 4
+TIMEOUT_STANDARD = 3600 * 2
 
 DEFAULT_TYPE = 'confirmed'
 DEFAULT_COUNTRY = "France"
@@ -243,7 +243,7 @@ app.layout = html.Div(children=[
                         html.H4(
                             f"{'{0:n}'.format(hosp_data.get('hosp')[-1])} ({'+' if hosp_data.get('hosp')[-1] - hosp_data.get('hosp')[-2] > 0 else ''}{'{0:n}'.format(hosp_data.get('hosp')[-1] - hosp_data.get('hosp')[-2])})",
                             className="card-title"),
-                        html.H6(f"Nb of hospitalization on {hosp_data.get('date')[-1]}", className="card-subtitle")
+                        html.H6(f"People hospitalized on {hosp_data.get('date')[-1]}", className="card-subtitle")
                     ]
                 )
             ), className="col-md-4"
@@ -255,7 +255,7 @@ app.layout = html.Div(children=[
                         html.H4(
                             f"{'{0:n}'.format(hosp_data.get('rea')[-1])} ({'+' if hosp_data.get('rea')[-1] - hosp_data.get('rea')[-2] > 0 else ''}{'{0:n}'.format(hosp_data.get('rea')[-1] - hosp_data.get('rea')[-2])})",
                             className="card-title"),
-                        html.H6(f"Nb of reanimation on {hosp_data.get('date')[-1]}", className="card-subtitle")
+                        html.H6(f"People in intensive care (rea) on {hosp_data.get('date')[-1]}", className="card-subtitle")
                     ]
                 )
             ), className="col-md-4"

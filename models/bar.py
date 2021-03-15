@@ -16,13 +16,13 @@ class Bar:
         fig.add_trace(go.Bar(
             x=self.data['date'],
             y=self.data['hosp'],
-            name="Hospitalisation",
+            name="Hospitalization",
             opacity=0.8))
 
         fig.add_trace(go.Bar(
             x=self.data['date'],
             y=self.data['rea'],
-            name="Reanimation",
+            name="Intensive care (rea)",
             opacity=0.8))
 
         # Use date string to set xaxis range
