@@ -1,1 +1,0 @@
-web: gunicorn wsgi:application --workers=1 --timeout=1200 --max-requests 1200
