@@ -42,6 +42,7 @@ def get_cache():
 
 cache = get_cache()
 TIMEOUT_STANDARD = 3600
+TIMEOUT_SHORT = 60
 
 DEFAULT_TYPE = 'confirmed'
 DEFAULT_COUNTRY = "France"
@@ -76,7 +77,7 @@ def init_data():
     return data, countries, types, tots
 
 
-@cache.memoize(timeout=TIMEOUT_STANDARD)
+@cache.memoize(timeout=TIMEOUT_SHORT)
 def vaccine_data():
     json_data = FranceData().vaccine_data()
     if json_data:
@@ -87,13 +88,13 @@ def vaccine_data():
         }
         for data in json_data:
             vaccine_france_data.get('date').append(datetime.strptime(data.get('jour'), '%Y-%m-%d'))
-            vaccine_france_data.get('n_cum_dose1').append(data.get('n_cum_dose1'))
-            vaccine_france_data.get('n_cum_dose2').append(data.get('n_cum_dose2'))
+            vaccine_france_data.get('n_cum_dose1').append(int(data.get('n_cum_dose1')))
+            vaccine_france_data.get('n_cum_dose2').append(int(data.get('n_cum_dose2')))
 
         return vaccine_france_data
 
 
-@cache.memoize(timeout=TIMEOUT_STANDARD)
+@cache.memoize(timeout=TIMEOUT_SHORT)
 def hosp_data():
     list_data = FranceData().hosp_data()
     hosp_france_data = {
@@ -231,7 +232,8 @@ app.layout = html.Div(children=[
                         html.H4(
                             f"{'{0:n}'.format(vaccine_data.get('n_cum_dose1')[-1])} (+{'{0:n}'.format(vaccine_data.get('n_cum_dose1')[-1] - vaccine_data.get('n_cum_dose1')[-2])})",
                             className="card-title"),
-                        html.H6(f"Nb of 1st dose given on {vaccine_data.get('date')[-1]:%Y-%m-%d }", className="card-subtitle")
+                        html.H6(f"Nb of 1st dose given on {vaccine_data.get('date')[-1]:%Y-%m-%d }",
+                                className="card-subtitle")
                     ]
                 )
             ), className="col-md-4"
@@ -255,7 +257,8 @@ app.layout = html.Div(children=[
                         html.H4(
                             f"{'{0:n}'.format(hosp_data.get('rea')[-1])} ({'+' if hosp_data.get('rea')[-1] - hosp_data.get('rea')[-2] > 0 else ''}{'{0:n}'.format(hosp_data.get('rea')[-1] - hosp_data.get('rea')[-2])})",
                             className="card-title"),
-                        html.H6(f"People in intensive care (rea) on {hosp_data.get('date')[-1]}", className="card-subtitle")
+                        html.H6(f"People in intensive care (rea) on {hosp_data.get('date')[-1]}",
+                                className="card-subtitle")
                     ]
                 )
             ), className="col-md-4"
