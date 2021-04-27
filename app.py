@@ -84,12 +84,12 @@ def vaccine_data():
         vaccine_france_data = {
             'date': [],
             'n_cum_dose1': [],
-            'n_cum_dose2': [],
+            'n_cum_complet': [],
         }
         for data in json_data:
             vaccine_france_data.get('date').append(datetime.strptime(data.get('jour'), '%Y-%m-%d'))
             vaccine_france_data.get('n_cum_dose1').append(int(data.get('n_cum_dose1')))
-            vaccine_france_data.get('n_cum_dose2').append(int(data.get('n_cum_dose2')))
+            vaccine_france_data.get('n_cum_complet').append(int(data.get('n_cum_complet')))
 
         return vaccine_france_data
 

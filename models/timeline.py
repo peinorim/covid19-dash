@@ -21,7 +21,7 @@ class Timeline:
             opacity=0.8))
         fig.add_trace(go.Scatter(
             x=self.data['date'],
-            y=self.data['n_cum_dose2'],
+            y=self.data['n_cum_complet'],
             name="Second dose given",
             opacity=0.8))
 
