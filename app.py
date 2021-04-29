@@ -273,7 +273,7 @@ app.layout = html.Div(children=[
     ),
     html.Footer([
         html.A("Data provided by CSSEGISandData", href="https://github.com/CSSEGISandData/COVID-19", target="_blank"),
-    ], className="footer")
+    ], className="footer", style={"textAlign": "center", "padding": "20px 0"})
 
 ], className="container-fluid")
 
