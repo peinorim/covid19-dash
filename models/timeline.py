@@ -63,8 +63,7 @@ class Timeline:
             data = {
                 "dates": [],
                 "confirmed": [],
-                "deaths": [],
-                "recovered": []
+                "deaths": []
             }
             day_str = 0
             for index, day in enumerate(self.data[country]):
@@ -76,10 +75,6 @@ class Timeline:
                         data['dates'].append(datetime.strptime(day['date'], '%Y-%m-%d'))
                     data['confirmed'].append(day.get('confirmed'))
                     data['deaths'].append(day.get('deaths'))
-                    if day.get('recovered') is None:
-                        data['recovered'].append(self.data[country][index - 1].get('recovered'))
-                    else:
-                        data['recovered'].append(day.get('recovered'))
 
             if len(self.countries) != 1:
                 graph_title = f'{self.type} cases' if self.dayone_mode is False else f'{self.type} cases from day 0'
@@ -100,12 +95,6 @@ class Timeline:
                     x=data['dates'],
                     y=data['deaths'],
                     name="deaths",
-                    opacity=0.8))
-
-                fig.add_trace(go.Scatter(
-                    x=data['dates'],
-                    y=data['recovered'],
-                    name="recovered",
                     opacity=0.8))
 
         # Use date string to set xaxis range
