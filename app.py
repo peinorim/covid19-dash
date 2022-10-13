@@ -5,41 +5,20 @@ from datetime import datetime
 import dash
 from dash import html
 from dash import dcc
-
 import dash_bootstrap_components as dbc
-import redis
 from dash.dependencies import Input, Output
-from flask_caching import Cache
 
 from models.bar import Bar
 from models.data import Data, FranceData
 from models.forecast import Forecast
 from models.map import Map
+from models.pie import Pie
 from models.timeline import Timeline
 
 external_stylesheets = [dbc.themes.DARKLY]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, assets_external_path='assets')
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
-
-def get_cache():
-    rs = redis.StrictRedis(
-        host=os.environ.get('REDIS_HOST', '127.0.0.1'),
-        port=os.environ.get('REDIS_PORT', '6379'),
-        db=os.environ.get('REDIS_DB', '0'),
-        password=os.environ.get('REDIS_PASSWORD', '')
-    )
-    rs.ping()
-    return Cache(app.server, config={
-        'CACHE_TYPE': 'redis',
-        'CACHE_REDIS_HOST': os.environ.get('REDIS_HOST', '127.0.0.1'),
-        'CACHE_REDIS_PORT': os.environ.get('REDIS_PORT', '6379'),
-        'CACHE_REDIS_DB': os.environ.get('REDIS_DB', '0'),
-        'CACHE_REDIS_PASSWORD': os.environ.get('REDIS_PASSWORD', '')
-    })
-
-
-cache = get_cache()
 TIMEOUT_STANDARD = 3600
 TIMEOUT_SHORT = 60
 
@@ -48,7 +27,6 @@ DEFAULT_COUNTRY = "France"
 DEFAULT_COUNTRIES = ["France", "United Kingdom", "Spain", "Italy", "Germany"]
 
 
-@cache.memoize(timeout=TIMEOUT_STANDARD)
 def init_data():
     data = Data().data
 
@@ -56,12 +34,14 @@ def init_data():
     types = [
         {'label': "Confirmed", 'value': "confirmed"},
         {'label': "Deaths", 'value': "deaths"},
+        {'label': "Recovered", 'value': "recovered"},
     ]
 
     tots = {
         'last_date': None,
         'confirmed': 0,
         'deaths': 0,
+        'recovered': 0
     }
 
     for country in data:
@@ -69,11 +49,11 @@ def init_data():
             countries.append({'label': country, 'value': country})
             tots['confirmed'] += data[country][-1].get('confirmed', 0)
             tots['deaths'] += data[country][-1].get('deaths', 0)
+            tots['recovered'] += data[country][-1].get('recovered', 0)
             tots['last_date'] = datetime.strptime(data[country][-1].get('date'), '%Y-%m-%d')
     return data, countries, types, tots
 
 
-@cache.memoize(timeout=TIMEOUT_SHORT)
 def vaccine_data():
     json_data = FranceData().vaccine_data()
     if json_data:
@@ -90,7 +70,6 @@ def vaccine_data():
         return vaccine_france_data
 
 
-@cache.memoize(timeout=TIMEOUT_SHORT)
 def hosp_data():
     list_data = FranceData().hosp_data()
     hosp_france_data = {
@@ -127,6 +106,7 @@ timeline_one_start = Timeline(data=data, countries=[DEFAULT_COUNTRY], type=DEFAU
 timeline_dayone_start = Timeline(data=data, countries=DEFAULT_COUNTRIES, type=DEFAULT_TYPE, dayone_mode=True)
 forecast_start = Forecast(data=data, country=DEFAULT_COUNTRY, type=DEFAULT_TYPE)
 map_start = Map(data=data, countries=DEFAULT_COUNTRIES, type=DEFAULT_TYPE, tots=tots)
+pie_start = Pie(data=data[DEFAULT_COUNTRY], country=DEFAULT_COUNTRY)
 bar = Bar(data=data[DEFAULT_COUNTRY], type=DEFAULT_TYPE, country=DEFAULT_COUNTRY)
 timeline_france_vaccine = Timeline(data=vaccine_data, type=DEFAULT_TYPE)
 bar_france_hosp = Bar(data=hosp_data, type=DEFAULT_TYPE)
@@ -149,7 +129,7 @@ app.layout = html.Div(children=[
                                 html.H6("Confirmed", className="card-subtitle")
                             ]
                         )
-                    ), className="col-md-6"
+                    ), className="col-md-4"
                 ),
                 html.Div(
                     dbc.Card(
@@ -161,8 +141,20 @@ app.layout = html.Div(children=[
                                 html.H6("Deaths", className="card-subtitle")
                             ]
                         )
-                    ), className="col-md-6"
+                    ), className="col-md-4"
                 ),
+                html.Div(
+                    dbc.Card(
+                        dbc.CardBody(
+                            [
+                                html.H4(
+                                    f"{'{0:n}'.format(tots['recovered'])} ({round((tots['recovered'] / tots['confirmed']) * 100, 1)}%)",
+                                    className="card-title"),
+                                html.H6("Recovered", className="card-subtitle")
+                            ]
+                        )
+                    ), className="col-md-4"
+                )
             ], className="col-md-12", style={"paddingBottom": "20px"}
         ),
         html.Div([
@@ -204,8 +196,9 @@ app.layout = html.Div(children=[
                 ), className="col-md-3"
             ), className="col-md-12 row"
         ),
-        html.Div([dcc.Graph(id='timeline-one-graph', figure=timeline_one_start.set_figure())], className="col-md-6"),
-        html.Div([dcc.Graph(id='bar-graph', figure=bar.set_figure())], className="col-md-6"),
+        html.Div([dcc.Graph(id='timeline-one-graph', figure=timeline_one_start.set_figure())], className="col-md-7"),
+        html.Div([dcc.Graph(id='pie-one-graph', figure=pie_start.set_figure())], className="col-md-5"),
+        html.Div([dcc.Graph(id='bar-graph', figure=bar.set_figure())], className="col-md-12"),
         html.Div([dcc.Graph(id='forecast-graph', figure=forecast_start.set_figure())], className=f"col-md-12 {hidden}"),
         html.Div(
             dbc.Card(
@@ -281,6 +274,7 @@ def update_countries(countries, type):
 @app.callback([
     Output(component_id='timeline-one-graph', component_property='figure'),
     Output(component_id='forecast-graph', component_property='figure'),
+    Output(component_id='pie-one-graph', component_property='figure'),
     Output(component_id='bar-graph', component_property='figure'),
 ],
     [
@@ -291,9 +285,10 @@ def update_countries(countries, type):
 def update_country(country, type):
     new_timeline_one = Timeline(data=data, countries=[country], type=type)
     new_forecast = Forecast(data=data, country=country, type=type)
+    new_pie = Pie(data=data[country], country=country)
     new_bar = Bar(data=data[country], country=country, type=type)
 
-    return new_timeline_one.set_figure(), new_forecast.set_figure(), new_bar.set_figure()
+    return new_timeline_one.set_figure(), new_forecast.set_figure(), new_pie.set_figure(), new_bar.set_figure()
 
 
 if __name__ == '__main__':
